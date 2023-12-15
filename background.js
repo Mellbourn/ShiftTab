@@ -157,7 +157,9 @@ chrome.commands.onCommand.addListener(function(command) {
       chrome.tabs.update(current.id, {active: true, pinned: current.pinned});
       chrome.windows.update(nextWin.id, { focused: true });
       // make sure that the previously selected tab is selected again, as opposed to the rightmost tab
-      chrome.tabs.update(previous[current.windowId], {active: true});
+      if (previous[current.windowId]) {
+        chrome.tabs.update(previous[current.windowId], { active: true })
+      }
 
     }).catch(e => console.error(e));
   }
