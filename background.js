@@ -4,7 +4,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
 const createNewWindow = (
   tab,
   windowType,
@@ -106,6 +105,16 @@ function spawn(genF, self) {
 const cmdDir = {"move-left": -1, "move-right": 1, "move-up": -1, "move-down": 1};
 const cmdAxis = {"move-left": "left", "move-right": "left", "move-up": "top", "move-down": "top"};
 
+let current = {}
+let previous = {}
+
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  previous[activeInfo.windowId] = current[activeInfo.windowId];
+  current[activeInfo.windowId] = activeInfo.tabId;
+  // console.log('previous', previous)
+  // console.log('current', current)
+});
+
 chrome.commands.onCommand.addListener(function(command) {
   if (cmdDir[command]) {
     spawn(function*() {
@@ -122,6 +131,7 @@ chrome.commands.onCommand.addListener(function(command) {
 
       let windows = yield chrome.windows.getAll.toPromise(null);
       let currentWin = windows.find(w => current.windowId == w.id);
+      // console.log('-------- currentWin.state', currentWin.state)
       windows = windows
         .filter(
           (x) =>
@@ -132,6 +142,7 @@ chrome.commands.onCommand.addListener(function(command) {
       // console.table(windows);
 
       let nextWin = windows[0];
+      // console.log("🚀 ~ file: background.js:136 ~ spawn ~ nextWin:", nextWin)
       if (!nextWin) {
           yield createNewWindow(current, "normal", {
               left: currentWin.left ?? 0,
@@ -144,7 +155,9 @@ chrome.commands.onCommand.addListener(function(command) {
       yield chrome.tabs.move.toPromise(current.id, {windowId: nextWin.id, index: -1});
 
       chrome.tabs.update(current.id, {active: true, pinned: current.pinned});
-      chrome.windows.update(nextWin.id, {focused: true});
+      chrome.windows.update(nextWin.id, { focused: true });
+      // make sure that the previously selected tab is selected again, as opposed to the rightmost tab
+      chrome.tabs.update(previous[current.windowId], {active: true});
 
     }).catch(e => console.error(e));
   }
