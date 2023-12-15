@@ -2,7 +2,7 @@
   "name": "Shift Tab",
   "version": "1.3",
   "manifest_version": 3,
-  "description": "Creates keyboard shortcuts (Ctrl + Alt + Left/Right/Up/Down) to move currently selected tab to adjacent windows",
+  "description": "Creates keyboard shortcuts (Ctrl + Shift + Left/Right/Up/Down) to move currently selected tab to adjacent windows",
   "background": {
     "service_worker": "background.js"
   },
@@ -18,19 +18,19 @@
   },
   "commands": {
     "move-left": {
-      "suggested_key": { "default": "Ctrl+Alt+Left" },
+      "suggested_key": { "default": "Ctrl+Shift+Left" },
       "description": "Move tab one window left"
     },
     "move-right": {
-      "suggested_key": { "default": "Ctrl+Alt+Right" },
+      "suggested_key": { "default": "Ctrl+Shift+Right" },
       "description": "Move tab one window right"
     },
     "move-up": {
-      "suggested_key": { "default": "Ctrl+Alt+Up" },
+      "suggested_key": { "default": "Ctrl+Shift+Up" },
       "description": "Move tab one window up"
     },
     "move-down": {
-      "suggested_key": { "default": "Ctrl+Alt+Down" },
+      "suggested_key": { "default": "Ctrl+Shift+Down" },
       "description": "Move tab one window down"
     }
   },
